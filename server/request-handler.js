@@ -28,7 +28,7 @@ var requestHandler = function(request, response) {
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
-
+  console.log("tes1")
   // The outgoing status.
   var statusCode = 200;
 
@@ -55,6 +55,7 @@ var requestHandler = function(request, response) {
   response.end('Hello, World!');
 };
 
+
 // These headers will allow Cross-Origin Resource Sharing (CORS).
 // This code allows this server to talk to websites that
 // are on different domains, for instance, your chat client.
@@ -70,4 +71,9 @@ var defaultCorsHeaders = {
   'access-control-allow-headers': 'content-type, accept',
   'access-control-max-age': 10 // Seconds.
 };
+
+exports.requestHandler = requestHandler;
+
+
+
 
