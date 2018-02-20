@@ -40,13 +40,13 @@ var app = {
 
     // POST the message to the server
     $.ajax({
-      url: app.server,
+      url: `${app.server}/classes/messages`,
       type: 'POST',
       data: message,
       success: function (data) {
         // Clear messages input
         app.$message.val('');
-        console.log("sending")
+
         // Trigger a fetch to update the messages, pass true to animate
         app.fetch();
       },
@@ -58,11 +58,12 @@ var app = {
 
   fetch: function(animate) {
     $.ajax({
-      url: app.server,
+      url: `${app.server}/classes/messages`,
       type: 'GET',
       data: { order: '-createdAt' },
       contentType: 'application/json',
       success: function(data) {
+        console.log(data)
         // Don't bother if we have nothing to work with
         if (!data.results || !data.results.length) { return; }
 
