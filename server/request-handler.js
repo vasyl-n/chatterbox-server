@@ -13,6 +13,14 @@ this file and include it in basic-server.js so that it actually works.
 **************************************************************/
 
 
+var defaultCorsHeaders = {
+  'access-control-allow-origin': '*',
+  'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'access-control-allow-headers': 'content-type, accept',
+  'access-control-max-age': 10 // Seconds.
+};
+
+
 var message = {
   username: 'shawndrost',
   text: 'trololo',
@@ -20,7 +28,7 @@ var message = {
 };
 
 var messages = {
-  results: [message]
+  results: []
 };
 
 
@@ -40,23 +48,41 @@ var requestHandler = function(request, response) {
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
-  // console.log(request)
-  // The outgoing status.
-  var statusCode;
 
-  //  username=Vasyl&text=test&roomname=lobby
+  // The outgoing status.
+
+  if(request.url.split('?')[0].toString() !== '/classes/messages') {
+    var statusCode = 404;
+    var headers = defaultCorsHeaders;
+    headers['Content-Type'] = 'text/plain';
+    response.writeHead(statusCode, headers);
+    response.end();
+  }
+
+  var statusCode;
 
   if (request.method === 'POST') {
     request.on('data', function(data){
-      console.log(data.toString());
-      var arrayOfProperties = data.toString().split('&');
-      var obj = {};
-      arrayOfProperties.forEach(function(string){
-        var ar = string.split('=');
-        obj[ar[0]] = ar[1];
-      });
-      obj.objectId = Math.random() * 12345;
-      messages.results.push(obj);
+
+      var dataToString = data.toString();
+
+      if (dataToString.indexOf('&') === -1 && dataToString.indexOf('=') === -1) {
+        var objParsed = JSON.parse(data);
+        objParsed.objectId = Math.random() * 12345;
+        messages.results.push(objParsed);
+
+      } else {
+        var arrayOfProperties = dataToString.split('&');
+        var obj = {};
+        arrayOfProperties.forEach(function(string){
+          var ar = string.split('=');
+          obj[ar[0]] = ar[1];
+        });
+
+        obj.objectId = Math.random() * 12345;
+        messages.results.push(obj);
+      }
+
     });
     statusCode = 201;
     var headers = defaultCorsHeaders;
@@ -78,8 +104,7 @@ var requestHandler = function(request, response) {
     // .writeHead() writes to the request line and headers of the response,
     // which includes the status and all headers.
     response.writeHead(statusCode, headers);
-    response.write(JSON.stringify(messages));
-    response.end();
+    response.end(JSON.stringify(messages));
   }
 
 
@@ -103,12 +128,7 @@ var requestHandler = function(request, response) {
 //
 // Another way to get around this restriction is to serve you chat
 // client from this domain by setting up static file serving.
-var defaultCorsHeaders = {
-  'access-control-allow-origin': '*',
-  'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'access-control-allow-headers': 'content-type, accept',
-  'access-control-max-age': 10 // Seconds.
-};
+
 
 exports.requestHandler = requestHandler;
 
