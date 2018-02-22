@@ -12,6 +12,8 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 
+var fs = require('fs');
+var path = require('path');
 
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
@@ -20,16 +22,6 @@ var defaultCorsHeaders = {
   'access-control-max-age': 10 // Seconds.
 };
 
-
-var message = {
-  username: 'shawndrost',
-  text: 'trololo',
-  roomname: '4chan'
-};
-
-var messages = {
-  results: []
-};
 
 
 var requestHandler = function(request, response) {
@@ -51,63 +43,89 @@ var requestHandler = function(request, response) {
 
   // The outgoing status.
 
-  if(request.url.split('?')[0].toString() !== '/classes/messages') {
-    var statusCode = 404;
-    var headers = defaultCorsHeaders;
-    headers['Content-Type'] = 'text/plain';
-    response.writeHead(statusCode, headers);
-    response.end();
-  }
+    // fs.readdir(path.resolve(__dirname + '/../client/rpt05-chatterbox-client-solution'),'utf8' , function(err, data) {
+    //   response.writeHead(200, {'Content-Type': 'text/html'});
+    //   console.log(data)
+    //   response.write(data);
+    //   // response.end();
+    // });
 
-  var statusCode;
-
-  if (request.method === 'POST') {
-    request.on('data', function(data){
-
-      var dataToString = data.toString();
-
-      if (dataToString.indexOf('&') === -1 && dataToString.indexOf('=') === -1) {
-        var objParsed = JSON.parse(data);
-        objParsed.objectId = Math.random() * 12345;
-        messages.results.push(objParsed);
-
-      } else {
-        var arrayOfProperties = dataToString.split('&');
-        var obj = {};
-        arrayOfProperties.forEach(function(string){
-          var ar = string.split('=');
-          obj[ar[0]] = ar[1];
-        });
-
-        obj.objectId = Math.random() * 12345;
-        messages.results.push(obj);
-      }
-
-    });
-    statusCode = 201;
-    var headers = defaultCorsHeaders;
-    headers['Content-Type'] = 'text/plain';
-    response.writeHead(statusCode, headers);
-    response.end();
-
-  } else {
-    // See the note below about CORS headers.
-
-    statusCode = 200;
-    var headers = defaultCorsHeaders;
-
-    // Tell the client we are sending them plain text.
-    //
-    // You will need to change this if you are sending something
-    // other than plain text, like JSON or HTML.
-    headers['Content-Type'] = 'text/json';
-    // .writeHead() writes to the request line and headers of the response,
-    // which includes the status and all headers.
-    response.writeHead(statusCode, headers);
-    response.end(JSON.stringify(messages));
-  }
+// var data = fs.readFileSync(path.resolve(__dirname, 'index.html'),'utf8');
+// console.log(data)
+// console.log(path.resolve(__dirname, 'index.html'))
+// console.log(process.argv[1])
 
 
+  fs.readFile(path.resolve(__dirname, 'messages.js'),'utf8', function(err, data) {
+    var messages = JSON.parse(data);
+
+    var writingFunction = function() {
+      fs.writeFile(path.resolve(__dirname, 'messages.js'), JSON.stringify(messages), (err) => {
+        if (err) throw err;
+        console.log('Lyric saved!');
+      });
+    }
+
+
+    if(request.url.split('?')[0].toString() !== '/classes/messages') {
+      var statusCode = 404;
+      var headers = defaultCorsHeaders;
+      headers['Content-Type'] = 'text/plain';
+      response.writeHead(statusCode, headers);
+      response.end();
+    }
+
+    var statusCode;
+
+    if (request.method === 'POST') {
+      request.on('data', function(data){
+
+        var dataToString = data.toString();
+        console.log(messages.results)
+        if (dataToString.indexOf('&') === -1 && dataToString.indexOf('=') === -1) {
+          var objParsed = JSON.parse(data);
+          objParsed.objectId = Math.random() * 12345;
+          messages.results.push(objParsed);
+
+        } else {
+          var arrayOfProperties = dataToString.split('&');
+          var obj = {};
+          arrayOfProperties.forEach(function(string){
+            var ar = string.split('=');
+            obj[ar[0]] = ar[1];
+          });
+
+          obj.objectId = Math.random() * 12345;
+          messages.results.push(obj);
+          writingFunction();
+          console.log(messages)
+        }
+
+      });
+      statusCode = 201;
+      var headers = defaultCorsHeaders;
+      headers['Content-Type'] = 'text/plain';
+      response.writeHead(statusCode, headers);
+      response.end();
+
+    } else {
+      // See the note below about CORS headers.
+
+      statusCode = 200;
+      var headers = defaultCorsHeaders;
+
+      // Tell the client we are sending them plain text.
+      //
+      // You will need to change this if you are sending something
+      // other than plain text, like JSON or HTML.
+      headers['Content-Type'] = 'text/json';
+      // .writeHead() writes to the request line and headers of the response,
+      // which includes the status and all headers.
+      response.writeHead(statusCode, headers);
+      response.end(JSON.stringify(messages));
+    }
+
+  });
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
