@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var read = require('read-file-relative').read
 
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
@@ -15,7 +16,9 @@ var sendResponse = function(response, data, statusCode) {
 };
 
 var handleIndexHTML = function(request, response) {
-  fs.readFile(path.resolve(__dirname, '../client/chatterbox-client/client/index.html'),'utf8', function(err, data) {
+  // fs.readFile(path.resolve(__dirname, '../client/chatterbox-client/client/index.html'),'utf8',
+  read('../client/chatterbox-client/client/index.html', 'utf8',
+    function(err, data) {
     response['Content-Type'] = 'text/html';
     sendResponse(response, data, 200)
   });

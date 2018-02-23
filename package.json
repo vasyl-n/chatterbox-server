@@ -33,6 +33,7 @@
     ]
   },
   "dependencies": {
-    "nodemon": "^1.15.0"
+    "nodemon": "^1.15.0",
+    "read-file-relative": "^1.2.0"
   }
 }
