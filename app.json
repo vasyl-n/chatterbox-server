@@ -1,0 +1,6 @@
+{
+  "name": "Chatterbox full-stack",
+  "description": "A full-stack char application",
+  "repository": "https://github.com/vasyl-n/chatterbox-server.git",
+  "keywords": ["node", "chat"]
+}
