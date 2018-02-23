@@ -1,1 +1,1 @@
-web: node ./server/basic-server.js
+web: npm start
