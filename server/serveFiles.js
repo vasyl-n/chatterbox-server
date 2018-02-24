@@ -20,7 +20,7 @@ var handleIndexHTML = function(request, response) {
   read('../client/chatterbox-client/client/index.html', 'utf8',
     function(err, data) {
     response['Content-Type'] = 'text/html';
-    sendResponse(response, data, 200)
+    sendResponse(response, "Hello World", 200)
   });
 };
 

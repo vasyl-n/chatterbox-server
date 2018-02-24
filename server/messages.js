@@ -1,1 +1,1 @@
-{"results":[{"username":"shawndrost","text":"trololo","roomname":"4chan"}]}
+{"results":[{"username":"shawndrost","text":"trololo","roomname":"4chan"},{"username":"Ethan","text":"Hello","roomname":"4chan","objectId":3800.222126839177}]}
