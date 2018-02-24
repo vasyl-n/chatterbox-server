@@ -4,8 +4,8 @@ var handleRequest = require('./request-handler');
 var path = require('url');
 var handleServingFiles = require('./serveFiles')
 
-var port = 3000;
-
+var port = process.env.PORT || 3000;
+console.log(process.env.PORT)
 var ip = '127.0.0.1';
 
 var routes = {
