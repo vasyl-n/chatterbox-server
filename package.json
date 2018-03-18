@@ -5,7 +5,6 @@
   "author": "Hack Reactor <curriculum.team@hackreactor.com>",
   "license": "UNLICENSED",
   "private": true,
-  "main": "server/basic-server.js",
   "engines": {
     "node": ">=4.0.0"
   },

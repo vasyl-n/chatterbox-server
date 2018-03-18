@@ -25,4 +25,4 @@ var server = http.createServer(function(request, response) {
 });
 
 console.log('Listening on http://' + ip + ':' + port);
-server.listen(port, ip);
+server.listen(process.env.PORT || 3000);

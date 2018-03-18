@@ -1,9 +1,11 @@
-
+// var port = process.env.PORT || 3000
 var app = {
 
   //TODO: The current 'handleUsernameClick' function just toggles the class 'friend'
   //to all messages sent by the user
-  server: `http://127.0.0.1:${process.env.PORT}`,
+  port: 3000,
+  server: `http://127.0.0.1:3000`,
+
   username: 'anonymous',
   roomname: 'lobby',
   lastMessageId: 0,
@@ -37,9 +39,10 @@ var app = {
 
   send: function(message) {
     app.startSpinner();
-
+    console.log(app.server)
     // POST the message to the server
     $.ajax({
+
       url: `${app.server}/classes/messages`,
       type: 'POST',
       data: message,
